@@ -1,0 +1,4 @@
+which -a bun
+/home/u637773451/.bun/bin/bun run /home/u637773451/domains/orange-squirrel-925737.hostingersite.com/public_html/server.js
+/home/u637773451/domains/orange-squirrel-925737.hostingersite.com/public_html/server.js
+/domains/orange-squirrel-925737.hostingersite.com/public_html
