@@ -91,7 +91,7 @@ if (cluster.isMaster) {
             }
 
             // Générer un jeton JWT
-            const token = jwt.sign({ id: user.id, mail: user.mail }, JWT_SECRET, {
+            const token = jwt.sign({ id: user.user_id, mail: user.mail }, JWT_SECRET, {
                 expiresIn: '1h', // Durée de validité du jeton
             });
 
@@ -128,6 +128,7 @@ if (cluster.isMaster) {
             } else {
                 if (results.length > 0) {
                     res.json(results[0]); // Envoie directement le premier (et unique) résultat
+                    console.log("version send")
                 } else {
                     res.status(404).send({ message: 'No version found' });
                 }
@@ -135,9 +136,40 @@ if (cluster.isMaster) {
         });
     });
 
-    // Exemple de route protégée
-    app.get('/profile', authenticateJWT, (req, res) => {
+    // routes protégées
+    app.get('/testtoken', authenticateJWT, (req, res) => {
         res.json({ message: 'This is your profile', user: req.user });
+        console.log("profile")
+    });
+
+    app.get('/usercharacter', authenticateJWT, (req, res) => {
+        const userId = req.user.id;
+    
+        const sql = 'SELECT * FROM player_characters WHERE user_id = ?';
+        pool.query(sql, [userId], (err, results) => {
+            if (err) {
+                return res.status(500).send(err);
+                console.log(results);
+            }
+            res.json({ characters: results });
+            console.log({ characters: results });
+            console.log(userId);
+        });
+    });
+
+    app.get('/useritems', authenticateJWT, (req, res) => {
+        const userId = req.user.id;
+    
+        const sql = 'SELECT * FROM player_items WHERE user_id = ?';
+        pool.query(sql, [userId], (err, results) => {
+            if (err) {
+                return res.status(500).send(err);
+                console.log(results);
+            }
+            res.json({ items: results });
+            console.log({ items: results });
+            console.log(userId);
+        });
     });
 
     app.listen(port, () => {
